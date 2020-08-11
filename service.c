@@ -42,12 +42,13 @@ ev_init()
 int
 ev_register( priority, handler, delay, info )
 unsigned priority;
-int (*handler)(); 
+int (*handler)();
 unsigned long delay;	/* in clock ticks */
 d_word info;
 {
 
-	if (pending_interrupts & (1 << priority)) {
+	if (pending_interrupts & (1 << priority))
+	{
 		/* There is one pending already */
 		return;
 	}
@@ -58,7 +59,8 @@ d_word info;
 	events[priority].handler = handler;
 	events[priority].info = info;
 	events[priority].when = ticks + delay;
-	if (!pending_interrupts || ticks + delay < earliest) {
+	if (!pending_interrupts || ticks + delay < earliest)
+	{
 		earliest = ticks + delay;
 	}
 	pending_interrupts |= 1 << priority;
@@ -75,32 +77,54 @@ ev_fire( int priority )
 {
 	int x;
 	unsigned long mask;
-	switch (priority) {
-		case 0: mask = ~0; break;
-		case 1: mask = ~0; break;
-		case 2: mask = ~0; break;
-		case 3: mask = ~0; break;
-		/* BK-0010 uses MTPS #200 to block keyboard interrupts */
-		case 4: mask = 1; break;
-		case 5: mask = 0; break;
-		case 6: mask = 0; break;
-		case 7: mask = 0; break;
+	switch (priority)
+	{
+	case 0:
+		mask = ~0;
+		break;
+	case 1:
+		mask = ~0;
+		break;
+	case 2:
+		mask = ~0;
+		break;
+	case 3:
+		mask = ~0;
+		break;
+	/* BK-0010 uses MTPS #200 to block keyboard interrupts */
+	case 4:
+		mask = 1;
+		break;
+	case 5:
+		mask = 0;
+		break;
+	case 6:
+		mask = 0;
+		break;
+	case 7:
+		mask = 0;
+		break;
 	}
-	if (!(mask & pending_interrupts) || ticks < earliest) {
+	if (!(mask & pending_interrupts) || ticks < earliest)
+	{
 		return;
 	}
 
 	earliest = 10.0e38;
 
-	for( x = 0; x < NUM_PRI && (1<<x) <= pending_interrupts; ++x ) {
+	for( x = 0; x < NUM_PRI && (1<<x) <= pending_interrupts; ++x )
+	{
 		if (mask & pending_interrupts & (1<<x) &&
-			ticks >= events[x].when) {
+		        ticks >= events[x].when)
+		{
 			events[x].handler(events[x].info);
 			/* fprintf(stderr, "Firing pri %d\n", x); */
 			pending_interrupts &= ~(1 << x);
 			mask = 0;
-		} else if (pending_interrupts & (1<<x) &&
-			events[x].when < earliest) {
+		}
+		else if (pending_interrupts & (1<<x) &&
+		         events[x].when < earliest)
+		{
 			earliest = events[x].when;
 		}
 	}
@@ -131,11 +155,12 @@ d_word vector;
 
 	oldpsw = p->psw;
 	oldpc = p->regs[PC];
-	
+
 	/* If we're servicing an interrupt while a WAIT instruction
 	 * was executing, we need to return after the WAIT.
 	 */
-	if (in_wait_instr) {
+	if (in_wait_instr)
+	{
 		oldpc += 2;
 		in_wait_instr = 0;
 	}

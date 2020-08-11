@@ -11,7 +11,7 @@
  *
  * Email:  mag@potter.csh.rit.edu
  * FTP:    ftp.csh.rit.edu:/pub/csh/mag/pdp.tar.Z
- * 
+ *
  * Copyright 1994, Eric A. Edwards
  *
  * Permission to use, copy, modify, and distribute this
@@ -56,7 +56,7 @@ flag_t fake_disk = 1; /* true for BK-0011M and bkmodel == 2 */
 char * romdir = "rom"; /* default ROM path */
 char * monitor10rom = "MONIT10.ROM";
 char * focal10rom = "FOCAL10.ROM";
-char * basic10rom = "BASIC10.ROM"; 
+char * basic10rom = "BASIC10.ROM";
 char * diskrom = "DISK_327.ROM";
 char * bos11rom = "B11M_BOS.ROM";
 char * bos11extrom = "B11M_EXT.ROM";
@@ -103,16 +103,17 @@ int argc;
 char **argv;
 {
 	/* Gettext stuff */
- 	setlocale (LC_ALL, "");
- 	bindtextdomain ("bk", "/usr/share/locale");
- 	textdomain ("bk");
+	setlocale (LC_ALL, "");
+	bindtextdomain ("bk", "/usr/share/locale");
+	textdomain ("bk");
 	init_config();
 
 	aflag = 1;		/* auto boot */
 	nflag = 1;		/* enable sound */
 	/* nothing is connected to the port by default, use ~/.bkrc */
-	
-	if ( args( argc, argv ) < 0 ) {
+
+	if ( args( argc, argv ) < 0 )
+	{
 		fprintf( stderr, _("Usage: %s [options]\n"), argv[0] );
 		fprintf( stderr, _("   -0        BK-0010\n") );
 		fprintf( stderr, _("   -1        BK-0010.01\n") );
@@ -155,7 +156,8 @@ by the environment variable BK_PATH.\n"), romdir );
 	if (getenv("BK_PATH"))
 		romdir = getenv("BK_PATH");
 
-	switch( bkmodel ) {
+	switch( bkmodel )
+	{
 	case 0: /* BK0010 */
 		rompath10 = monitor10rom;
 		rompath12 = focal10rom;
@@ -174,7 +176,7 @@ by the environment variable BK_PATH.\n"), romdir );
 		rompath16 = diskrom;
 		TICK_RATE = 3000000;
 		break;
-        case 3:	/* BK-0011M */
+	case 3:	/* BK-0011M */
 	case 9: /* Terak 8510/a */
 		rompath10 = rompath12 = rompath16 = 0;
 		TICK_RATE = 4000000;
@@ -187,15 +189,17 @@ by the environment variable BK_PATH.\n"), romdir );
 		fprintf( stderr, _("Unknown BK model. Bailing out.\n"), argv[0] );
 		exit( -1 );
 	}
-	
+
 	/* Turn on the "TURBO" mode */
-	if ( turboflag ) {
-	    TICK_RATE = (TICK_RATE * 2); 
+	if ( turboflag )
+	{
+		TICK_RATE = (TICK_RATE * 2);
 	}
 
 	printf( _("Initializing SDL.\n") );
 
-	if((SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER)==-1)) {
+	if((SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER)==-1))
+	{
 		printf( _("Could not initialize SDL: %s.\n"), SDL_GetError());
 		exit(-1);
 	}
@@ -216,39 +220,49 @@ by the environment variable BK_PATH.\n"), romdir );
 	mem_init();		/* ...main memory */
 	scr_init();		/* video display */
 	boot_init();		/* ROM blocks */
-	if (terak) {
+	if (terak)
+	{
 		// setup_terak();
-	} else {
-	if (mouseflag)
-		plug_mouse();
-	if (printer_file)
-		plug_printer();
-	if (covoxflag)
-		plug_covox();
-	if (synthflag)
-		plug_synth();
-	if (plipflag)
-		plug_bkplip();
+	}
+	else
+	{
+		if (mouseflag)
+			plug_mouse();
+		if (printer_file)
+			plug_printer();
+		if (covoxflag)
+			plug_covox();
+		if (synthflag)
+			plug_synth();
+		if (plipflag)
+			plug_bkplip();
 	}
 	q_reset();             /* ...any devices */
 
-	/* Starting frame rate */ 
+	/* Starting frame rate */
 	frame_delay = TICK_RATE/25;
 	half_frame_delay = TICK_RATE/50;
 
-	if (terak) {
+	if (terak)
+	{
 		pdp.regs[PC] = 0173000;
-	} else {
+	}
+	else
+	{
 		lc_word(0177716, &pdp.regs[PC]);
 		pdp.regs[PC] &= 0177400;
 	}
-	if (init_path[0]) {
+	if (init_path[0])
+	{
 		tracefile = fopen(init_path, "w");
 	}
-	if ( aflag ) {
-		run( 1 );			/* go for it */	
+	if ( aflag )
+	{
+		run( 1 );			/* go for it */
 		ui();
-	} else {
+	}
+	else
+	{
 		ui();				/* run the user interface */
 	}
 
@@ -268,29 +282,36 @@ char **argv;
 	char **narg;
 
 	narg = argv;
-	while ( --argc ) {
+	while ( --argc )
+	{
 		narg++;
 		farg = *narg;
-		if ( *farg++ == '-' ) {
-			switch( *farg ) {
-			 case '0': case '1': case '2': case '3': case '4':
+		if ( *farg++ == '-' )
+		{
+			switch( *farg )
+			{
+			case '0':
+			case '1':
+			case '2':
+			case '3':
+			case '4':
 				bkmodel = *farg - '0';
 				break;
-			 case 'K':
+			case 'K':
 				bkmodel = 9;
 				// Terak has no sound yet, turn sound off
 				nflag = 0;
 				break;
-			 case 'A':
+			case 'A':
 				floppyA = *++farg ? farg : (argc--,*++narg);
 				break;
-			 case 'B':
+			case 'B':
 				floppyB = *++farg ? farg : (argc--,*++narg);
 				break;
-			 case 'C':
+			case 'C':
 				floppyC = *++farg ? farg : (argc--,*++narg);
 				break;
-			 case 'D':
+			case 'D':
 				floppyD = *++farg ? farg : (argc--,*++narg);
 				break;
 			case 'a':
@@ -342,7 +363,9 @@ char **argv;
 				/*NOTREACHED*/
 				break;
 			}
-		} else {
+		}
+		else
+		{
 			return -1;
 		}
 	}
@@ -363,7 +386,8 @@ sim_init()
 {
 	int x;
 
-	for ( x = 0; x < 8; ++x ) {
+	for ( x = 0; x < 8; ++x )
+	{
 		pdp.regs[x] = 0;
 	}
 	pdp.ir = 0;
@@ -400,18 +424,18 @@ run( int flag )
 	 */
 
 	expired = ((double) stop_time.tv_sec) +
-		(((double) stop_time.tv_usec) / 1000000.0 );
+	          (((double) stop_time.tv_usec) / 1000000.0 );
 	expired -= ((double) start_time.tv_sec) +
-		(((double) start_time.tv_usec) / 1000000.0 );
+	           (((double) start_time.tv_usec) / 1000000.0 );
 	if ( expired != 0.0 )
 		speed = (((double)p->total) / expired );
 	else
 		speed = 0.0;
 	fprintf( stderr, _("Instructions executed: %d\n"), p->total );
 	fprintf( stderr, _("Simulation rate: %.5g instructions per second\n"),
-		speed );
+	         speed );
 	fprintf( stderr, _("BK speed: %.5g instructions per second\n"),
-		(double) p->total * TICK_RATE / ticks );
+	         (double) p->total * TICK_RATE / ticks );
 	p->total = 0;
 }
 
@@ -423,7 +447,8 @@ int cybuf[1024];
 int cybufidx = 0;
 
 void
-addtocybuf(int val) {
+addtocybuf(int val)
+{
 	cybuf[cybufidx] = val;
 	cybufidx = (cybufidx+1) % 1024;
 }
@@ -456,14 +481,16 @@ int flag;
 	 * Run until told to stop.
 	 */
 
-	do {
+	do
+	{
 		addtocybuf(p->regs[PC]);
 
 		/*
 		 * Fetch and execute the instruction.
 		 */
-	
-		if (traceflag) {
+
+		if (traceflag)
+		{
 			extern double io_sound_count;
 			disas(p->regs[PC], buf);
 			if (tracefile) fprintf(tracefile, "%s\t%s\n", buf, state(p));
@@ -472,7 +499,8 @@ int flag;
 		result = ll_word( p, p->regs[PC], &p->ir );
 		oldpc = p->regs[PC];
 		p->regs[PC] += 2;
-		if (result == OK) {
+		if (result == OK)
+		{
 			result = (itab[p->ir>>6].func)( p );
 			timing(p);
 		}
@@ -481,22 +509,24 @@ int flag;
 		 * Mop up the mess.
 		 */
 
-		if ( result != OK ) {
-			switch( result ) {
+		if ( result != OK )
+		{
+			switch( result )
+			{
 			case BUS_ERROR:			/* vector 4 */
 				ticks += 64;
 			case ODD_ADDRESS:
 				fprintf( stderr, _(" pc=%06o, last branch @ %06o\n"),
-					oldpc, last_branch );
+				         oldpc, last_branch );
 				result2 = service( (d_word) 04 );
 				break;
 			case CPU_ILLEGAL:		/* vector 10 */
 #undef VERBOSE_ILLEGAL
 #ifdef VERBOSE_ILLEGAL
 				disas(oldpc, buf);
-				fprintf( stderr, 
-				_("Illegal inst. %s, last branch @ %06o\n"),
-					buf, last_branch );
+				fprintf( stderr,
+				         _("Illegal inst. %s, last branch @ %06o\n"),
+				         buf, last_branch );
 #endif
 				result2 = service( (d_word) 010 );
 				break;
@@ -527,12 +557,13 @@ int flag;
 			default:
 				fprintf( stderr, _("\nUnexpected return.\n") );
 				fprintf( stderr, _("exec=%d pc=%06o ir=%06o\n"),
-					result, oldpc, p->ir );
+				         result, oldpc, p->ir );
 				flag = 0;
 				result2 = OK;
 				break;
 			}
-			if ( result2 != OK ) {
+			if ( result2 != OK )
+			{
 				fprintf( stderr, _("\nDouble trap @ %06o.\n"), oldpc);
 				lc_word(0177716, &p->regs[PC]);
 				p->regs[PC] &= 0177400;
@@ -540,8 +571,10 @@ int flag;
 			}
 		}
 
-		if (( p->psw & 020) && (rtt == 0 )) {		/* trace bit */
-			if ( service((d_word) 014 ) != OK ) {
+		if (( p->psw & 020) && (rtt == 0 ))  		/* trace bit */
+		{
+			if ( service((d_word) 014 ) != OK )
+			{
 				fprintf( stderr, _("\nDouble trap @ %06o.\n"), p->regs[PC]);
 				lc_word(0177716, &p->regs[PC]);
 				p->regs[PC] &= 0177400;
@@ -554,40 +587,49 @@ int flag;
 		if (nflag)
 			sound_flush();
 
-		if (bkmodel && ticks >= ticks_timer) {
+		if (bkmodel && ticks >= ticks_timer)
+		{
 			scr_sync();
-			if (timer_intr_enabled) {
+			if (timer_intr_enabled)
+			{
 				ev_register(TIMER_PRI, service, 0, 0100);
 			}
 			ticks_timer += half_frame_delay;
 		}
 
-		if (ticks >= ticks_screen) {
-		    /* In full speed, update every 40 real ms */
-		    if (fullspeed) {
-			Uint32 cur_sdl_ticks = SDL_GetTicks();
-		 	if (cur_sdl_ticks - last_screen_update >= 40) {
-			    last_screen_update = cur_sdl_ticks;
-			    scr_flush();
+		if (ticks >= ticks_screen)
+		{
+			/* In full speed, update every 40 real ms */
+			if (fullspeed)
+			{
+				Uint32 cur_sdl_ticks = SDL_GetTicks();
+				if (cur_sdl_ticks - last_screen_update >= 40)
+				{
+					last_screen_update = cur_sdl_ticks;
+					scr_flush();
+				}
 			}
-		    } else {
-			scr_flush();
-		    }
-		    tty_recv();
-		    ticks_screen += frame_delay;
-		    /* In simulated speed, if we're more than 10 ms
-		     * ahead, slow down. Avoid rounding the delay up
-		     * by SDL. If the sound is on, sound buffering
-		     * provides synchronization.
-		     */
-		    if (!fullspeed && !nflag) {
-		    	double cur_delta =
-				ticks - SDL_GetTicks() * (TICK_RATE/1000.0);
-			if (cur_delta - timing_delta > TICK_RATE/100) {
-				int msec = (cur_delta - timing_delta) / (TICK_RATE/1000);
-				SDL_Delay(msec / 10 * 10);
+			else
+			{
+				scr_flush();
 			}
-		    }
+			tty_recv();
+			ticks_screen += frame_delay;
+			/* In simulated speed, if we're more than 10 ms
+			 * ahead, slow down. Avoid rounding the delay up
+			 * by SDL. If the sound is on, sound buffering
+			 * provides synchronization.
+			 */
+			if (!fullspeed) // && !nflag)
+			{
+				double cur_delta =
+				    ticks - SDL_GetTicks() * (TICK_RATE/1000.0);
+				if (cur_delta - timing_delta > TICK_RATE/100)
+				{
+					int msec = (cur_delta - timing_delta) / (TICK_RATE/1000);
+					SDL_Delay(msec / 10 * 10);
+				}
+			}
 		}
 
 		/*
@@ -596,19 +638,25 @@ int flag;
 		 * to fire.
 		 */
 
-		if ( stop_it ) {
+		if ( stop_it )
+		{
 			fprintf( stderr, _("\nExecution interrupted.\n") );
 			flag = 0;
-		} else {
+		}
+		else
+		{
 			priority = ( p->psw >> 5) & 7;
-			if ( pending_interrupts && priority != 7 ) {
+			if ( pending_interrupts && priority != 7 )
+			{
 				ev_fire( priority );
 			}
 		}
-		if (checkpoint(p->regs[PC])) {
+		if (checkpoint(p->regs[PC]))
+		{
 			flag = 0;
 		}
-	} while( flag );
+	}
+	while( flag );
 
 	signal( SIGINT, SIG_DFL );
 }
@@ -627,89 +675,94 @@ void intr_hand()
 checkpoint(pc)
 d_word pc;
 {
-    extern int breakpoint;
-    extern unsigned char fake_tape;
-    switch(pc) {
-    case 0116256:
-		if (fake_tape && !bkmodel) {
+	extern int breakpoint;
+	extern unsigned char fake_tape;
+	switch(pc)
+	{
+	case 0116256:
+		if (fake_tape && !bkmodel)
+		{
 			fprintf(stderr, "Faking write file to tape\n");
 			fake_write_file();
 		}
 		break;
-    case 0116712:
-		if (fake_tape && !bkmodel) {
+	case 0116712:
+		if (fake_tape && !bkmodel)
+		{
 			fprintf(stderr, _("Simulating tune-up sequence\n"));
 			fake_tuneup_sequence();
 		}
 		break;
-    case 0117260:
-		if (fake_tape && !bkmodel) {
+	case 0117260:
+		if (fake_tape && !bkmodel)
+		{
 			fprintf(stderr, _("Simulating reading array with tune-up\n"));
 			fake_array_with_tuneup();
 		}
 		break;
-    case 0117376:
-		if (fake_tape && !bkmodel) {
+	case 0117376:
+		if (fake_tape && !bkmodel)
+		{
 			fake_read_strobe();
 		}
 		break;
-    case 0160250:
+	case 0160250:
 		if (fake_disk)
 			fake_disk_io();
 		break;
-    case 0160372:
+	case 0160372:
 		if (fake_disk)
 			fake_sector_io();
 		break;
-    case 0162246:
+	case 0162246:
 		fprintf(stderr, "INDEX ");
 		break;
-    case 0162304:
+	case 0162304:
 		fprintf(stderr, "err\n");
 		break;
-    case 0162312:
+	case 0162312:
 		fprintf(stderr, "good\n");
 		break;
-    case 0160746:
+	case 0160746:
 		fprintf(stderr, "WORK\n");
 		break;
-    case 0162012:
+	case 0162012:
 		fprintf(stderr, "FINDH\n");
 		break;
-    case 0161732:
+	case 0161732:
 		fprintf(stderr, "STREAD\n");
 		break;
-    case 0163004:
+	case 0163004:
 		fprintf(stderr, "GOTO00\n");
 		break;
-    case 0161610:
+	case 0161610:
 		fprintf(stderr, "RDSEC\n");
 		break;
-    case 0163072:
+	case 0163072:
 		fprintf(stderr, "FRESEC\n");
 		break;
-    }
-    return (pc == breakpoint);
+	}
+	return (pc == breakpoint);
 }
 
 showemuhelp()
 {
-    fprintf(stderr, _("Emulator window hotkeys:\n\n"));
-    fprintf(stderr, _(" ScrollLock - Toggle video mode (B/W, Color)\n"));
-    fprintf(stderr, _(" Left Super+F11 - Reset emulated machine\n"));
-    fprintf(stderr, _(" F12 - Load a file into BK memory\n\n"));
+	fprintf(stderr, _("Emulator window hotkeys:\n\n"));
+	fprintf(stderr, _(" ScrollLock - Toggle video mode (B/W, Color)\n"));
+	fprintf(stderr, _(" Left Super+F11 - Reset emulated machine\n"));
+	fprintf(stderr, _(" F12 - Load a file into BK memory\n\n"));
 }
 
 showbkhelp()
 {
-char *monitor10help = _("BK0010 MONITOR (the OS) commands:\n\n\
+	char *monitor10help = _("BK0010 MONITOR (the OS) commands:\n\n\
  'A' to 'K'  - Quit MONITOR.\n\
  'M'         - Read from tape. Press 'Enter' and type in the filename of\n\
                the desired .bin snapshot. Wait until the data loads into\n\
                the memory or use F12 instead.\n\
  'S'         - Start execution. You can specify an address to start from.\n");
 
-char *monitor11help = _("BK0011M BOS commands:\n\n\
+	char *monitor11help = _("BK0011M BOS commands:\n\n\
  'B'         - Boot from any bootable floppy.\n\
  'xxxB'      - Boot from the floppy drive xxx.\n\
  'L'         - Load file from tape\n\
@@ -732,28 +785,29 @@ char *monitor11help = _("BK0011M BOS commands:\n\n\
  '@'         - Close and jump to the address stored in the current memory cell.\n\
  'N;MC'      - Map memory page N (octal) to address range M (octal).\n");
 
-    switch( bkmodel ) { /* Make the hints model-specific */
-    case 0: /* BK0010 */
-	fprintf(stderr, monitor10help);
-        fprintf(stderr, _(" 'T' - Run built-in tests.\n\n"));
-        fprintf(stderr, _("Type 'P M' to quit FOCAL and get the MONITOR prompt.\n"));
-        fprintf(stderr, _("Type 'P T' to enter the test mode. 1-5 selects a test.\n\n"));
-    break;
-    case 1: /* BK0010.01 */
-	fprintf(stderr, monitor10help);
-        fprintf(stderr, _("\nType 'MO' to quit BASIC VILNIUS 1986 and get the MONITOR prompt.\n\n"));
-    break;
-    case 2: /* BK0010.01+FDD */
-	fprintf(stderr, monitor10help);
-        fprintf(stderr, _("\nType 'S160000' to boot from floppy A:.\n"));
-        fprintf(stderr, _("The BASIC ROM is disabled.\n\n"));
-    break;
-    case 3: /* BK0011M+FDD */
-	fprintf(stderr, monitor11help);
-        fprintf(stderr, _("\nBK-0011M boots automatically from the first floppy drive available.\n\n"));
-    break;
-    case 4: /* BK0011M */
-	fprintf(stderr, monitor11help);
-    break;
-    }
+	switch( bkmodel )   /* Make the hints model-specific */
+	{
+	case 0: /* BK0010 */
+		fprintf(stderr, monitor10help);
+		fprintf(stderr, _(" 'T' - Run built-in tests.\n\n"));
+		fprintf(stderr, _("Type 'P M' to quit FOCAL and get the MONITOR prompt.\n"));
+		fprintf(stderr, _("Type 'P T' to enter the test mode. 1-5 selects a test.\n\n"));
+		break;
+	case 1: /* BK0010.01 */
+		fprintf(stderr, monitor10help);
+		fprintf(stderr, _("\nType 'MO' to quit BASIC VILNIUS 1986 and get the MONITOR prompt.\n\n"));
+		break;
+	case 2: /* BK0010.01+FDD */
+		fprintf(stderr, monitor10help);
+		fprintf(stderr, _("\nType 'S160000' to boot from floppy A:.\n"));
+		fprintf(stderr, _("The BASIC ROM is disabled.\n\n"));
+		break;
+	case 3: /* BK0011M+FDD */
+		fprintf(stderr, monitor11help);
+		fprintf(stderr, _("\nBK-0011M boots automatically from the first floppy drive available.\n\n"));
+		break;
+	case 4: /* BK0011M */
+		fprintf(stderr, monitor11help);
+		break;
+	}
 }

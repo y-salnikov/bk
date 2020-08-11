@@ -33,29 +33,32 @@ static unsigned lasttime;
  * to receive 16 bit; that is, from PC to BK a whole byte can
  * be sent at once.
  */
-bkplip_init() {
+bkplip_init()
+{
 #ifdef linux
-  if (fd != -1) return OK;
+	if (fd != -1) return OK;
 
-  fd = open(DEVTAP, O_RDWR);
-  if(fd == -1) {
-    perror("tundev: tundev_init: open");
-    exit(1);
-  }
+	fd = open(DEVTAP, O_RDWR);
+	if(fd == -1)
+	{
+		perror("tundev: tundev_init: open");
+		exit(1);
+	}
 
-  {
-    struct ifreq ifr;
-    memset(&ifr, 0, sizeof(ifr));
-    ifr.ifr_flags = IFF_TUN|IFF_NO_PI;
-    if (ioctl(fd, TUNSETIFF, (void *) &ifr) < 0) {
-      perror("tundev: tundev_init: ioctl");
-      exit(1);
-    }
-  }
+	{
+		struct ifreq ifr;
+		memset(&ifr, 0, sizeof(ifr));
+		ifr.ifr_flags = IFF_TUN|IFF_NO_PI;
+		if (ioctl(fd, TUNSETIFF, (void *) &ifr) < 0)
+		{
+			perror("tundev: tundev_init: ioctl");
+			exit(1);
+		}
+	}
 
-  lasttime = 0;
+	lasttime = 0;
 #endif
-  return OK;
+	return OK;
 }
 
 static int len_left = 0;
@@ -72,39 +75,42 @@ c_addr addr;
 d_word *word;
 {
 #ifdef linux
-  fd_set fdset;
-  struct timeval tv, now;
-  int ret;
+	fd_set fdset;
+	struct timeval tv, now;
+	int ret;
 
-  if (len_left) {
-	*word = plip_buf[curbyte];
-	curbyte++;
-	len_left--;
-	return OK;
-  }
+	if (len_left)
+	{
+		*word = plip_buf[curbyte];
+		curbyte++;
+		len_left--;
+		return OK;
+	}
 
-  tv.tv_sec = 0;
-  tv.tv_usec = 500000;
+	tv.tv_sec = 0;
+	tv.tv_usec = 500000;
 
-  FD_ZERO(&fdset);
-  FD_SET(fd, &fdset);
-  ret = select(fd + 1, &fdset, NULL, NULL, &tv);
-  if(ret == 0) {
-    *word = 0;
-    lasttime = 0;    
-    return OK;
-  } 
-  ret = read(fd, plip_buf, 1500);  
-  if(ret == -1) {
-    perror("tun_dev: tundev_read: read");
-  }
-  curbyte = 0;
-  len_left = ret;
-  *word = 1<<15 | ret;
+	FD_ZERO(&fdset);
+	FD_SET(fd, &fdset);
+	ret = select(fd + 1, &fdset, NULL, NULL, &tv);
+	if(ret == 0)
+	{
+		*word = 0;
+		lasttime = 0;
+		return OK;
+	}
+	ret = read(fd, plip_buf, 1500);
+	if(ret == -1)
+	{
+		perror("tun_dev: tundev_read: read");
+	}
+	curbyte = 0;
+	len_left = ret;
+	*word = 1<<15 | ret;
 
-  printf("Got packet of length %d\n", ret);
+	printf("Got packet of length %d\n", ret);
 #endif
-  return OK;
+	return OK;
 }
 
 /*
@@ -116,15 +122,18 @@ c_addr addr;
 d_word word;
 {
 #ifdef linux
-	if (word & (1<<15)) {
-		if (txlen) {
+	if (word & (1<<15))
+	{
+		if (txlen)
+		{
 			printf("Sending new packet when %d bytes left from the old one\n",
-			txlen);
+			       txlen);
 			return BUS_ERROR;
 		}
 		txlen = word & 0x7fff;
 		txbyte = 0;
-		if (txlen > 1500) {
+		if (txlen > 1500)
+		{
 			printf("Transmit length %d???\n", txlen);
 			return BUS_ERROR;
 		}
@@ -134,7 +143,8 @@ d_word word;
 	plip_buf_tx[txbyte] = word & 0xff;
 	txlen--;
 	txbyte++;
-	if (!txlen) {
+	if (!txlen)
+	{
 		printf("Sending packet of length %d\n", txbyte);
 		write(fd, plip_buf_tx, txbyte);
 	}
@@ -142,13 +152,17 @@ d_word word;
 	return OK;
 }
 
-bkplip_bwrite(c_addr addr, d_byte byte) {
+bkplip_bwrite(c_addr addr, d_byte byte)
+{
 	d_word offset = addr & 1;
 	d_word word;
 	bkplip_read(addr & ~1, &word);
-	if (offset == 0) {
+	if (offset == 0)
+	{
 		word = (word & 0177400) | byte;
-	} else {
+	}
+	else
+	{
 		word = (byte << 8) | (word & 0377);
 	}
 	return bkplip_write(addr & ~1, word);

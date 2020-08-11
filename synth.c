@@ -11,9 +11,11 @@ unsigned char synth_reg;
 
 PSG * psg;
 
-synth_init() {
+synth_init()
+{
 	synth_reg = ~0;
-	if (!psg) {
+	if (!psg)
+	{
 		PSG_init(3579545, SOUND_FREQ);
 		psg=PSG_new();
 	}
@@ -35,14 +37,16 @@ synth_write(c_addr addr, d_word word)
 	return OK;
 }
 
-synth_bwrite(c_addr addr, d_byte byte) {
+synth_bwrite(c_addr addr, d_byte byte)
+{
 	// Writing data; what happens if the address is odd?
 	PSG_writeReg(psg, synth_reg, byte ^ 0xFF);
 	return OK;
 }
 
 int
-synth_next() {
-	int a = psg ? PSG_calc(psg) : 0; 
+synth_next()
+{
+	int a = psg ? PSG_calc(psg) : 0;
 	return a;
 }

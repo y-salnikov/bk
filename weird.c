@@ -11,7 +11,7 @@
  *
  * Email:  mag@potter.csh.rit.edu
  * FTP:    ftp.csh.rit.edu:/pub/csh/mag/pdp.tar.Z
- * 
+ *
  * Copyright 1994, Eric A. Edwards
  *
  * Permission to use, copy, modify, and distribute this
@@ -37,10 +37,10 @@ register pdp_regs *p;
 	fputc('*', stderr);
 	fflush(stderr);
 	q_reset();
-	p->psw = 0200; 
+	p->psw = 0200;
 	return OK;
 }
-	
+
 int waiti( p )
 register pdp_regs *p;
 {
@@ -51,16 +51,35 @@ register pdp_regs *p;
 	return CPU_WAIT;
 }
 
-int halt(pdp_regs *p) {
+int halt(pdp_regs *p)
+{
 	io_stop_happened = 4;
 	return CPU_HALT;
 }
-int iot() { return CPU_IOT; }
-int emt() { return CPU_EMT; }
-int trap() { return CPU_TRAP; }
-int bpt() { return CPU_BPT; }
-int fis() { return CPU_ILLEGAL; }		/* fis() would be fun! */
-int illegal() { return CPU_ILLEGAL; }
+int iot()
+{
+	return CPU_IOT;
+}
+int emt()
+{
+	return CPU_EMT;
+}
+int trap()
+{
+	return CPU_TRAP;
+}
+int bpt()
+{
+	return CPU_BPT;
+}
+int fis()
+{
+	return CPU_ILLEGAL;    /* fis() would be fun! */
+}
+int illegal()
+{
+	return CPU_ILLEGAL;
+}
 /*
  * mark() - Restore stack and jump.
  */
@@ -73,26 +92,61 @@ register pdp_regs *p;
 	last_branch = p->regs[PC];
 	p->regs[SP] = p->regs[PC] + (p->ir & 077) * 2;
 	p->regs[PC] = p->regs[R5];
-       if (( result = pop( p, &data )) != OK )
-                return result;
+	if (( result = pop( p, &data )) != OK )
+		return result;
 
-        p->regs[R5] = data;
+	p->regs[R5] = data;
 
-        return OK;
+	return OK;
 
-	
+
 }
-int bne( p ) register pdp_regs *p; { return brx( p, CC_Z, 0 ); }
-int beq( p ) register pdp_regs *p; { return brx( p, 0, CC_Z ); }
-int bpl( p ) register pdp_regs *p; { return brx( p, CC_N, 0 ); }
-int bmi( p ) register pdp_regs *p; { return brx( p, 0, CC_N ); }
-int bhi( p ) register pdp_regs *p; { return brx( p, CC_C|CC_Z, 0 ); }
-int bvc( p ) register pdp_regs *p; { return brx( p, CC_V, 0 ); }
-int bvs( p ) register pdp_regs *p; { return brx( p, 0, CC_V ); }
-int bcc( p ) register pdp_regs *p; { return brx( p, CC_C, 0 ); }
-int bcs( p ) register pdp_regs *p; { return brx( p, 0, CC_C ); }
-int scc( p ) register pdp_regs *p; { p->psw |= (p->ir & 017 ); return OK; }
-int ccc( p ) register pdp_regs *p; { p->psw &= ~(p->ir & 017 ); return OK; }
+int bne( p ) register pdp_regs *p;
+{
+	return brx( p, CC_Z, 0 );
+}
+int beq( p ) register pdp_regs *p;
+{
+	return brx( p, 0, CC_Z );
+}
+int bpl( p ) register pdp_regs *p;
+{
+	return brx( p, CC_N, 0 );
+}
+int bmi( p ) register pdp_regs *p;
+{
+	return brx( p, 0, CC_N );
+}
+int bhi( p ) register pdp_regs *p;
+{
+	return brx( p, CC_C|CC_Z, 0 );
+}
+int bvc( p ) register pdp_regs *p;
+{
+	return brx( p, CC_V, 0 );
+}
+int bvs( p ) register pdp_regs *p;
+{
+	return brx( p, 0, CC_V );
+}
+int bcc( p ) register pdp_regs *p;
+{
+	return brx( p, CC_C, 0 );
+}
+int bcs( p ) register pdp_regs *p;
+{
+	return brx( p, 0, CC_C );
+}
+int scc( p ) register pdp_regs *p;
+{
+	p->psw |= (p->ir & 017 );
+	return OK;
+}
+int ccc( p ) register pdp_regs *p;
+{
+	p->psw &= ~(p->ir & 017 );
+	return OK;
+}
 
 
 /*
@@ -104,7 +158,8 @@ register pdp_regs *p;
 {
 	last_branch = p->regs[PC];
 	p->regs[SRC_REG] -= 1;
-	if (p->regs[SRC_REG]) {
+	if (p->regs[SRC_REG])
+	{
 		p->regs[PC] -= ( p->ir & 077 ) * 2;
 	}
 	return OK;
@@ -128,13 +183,19 @@ register pdp_regs *p;
 	CHGB_CC_Z( data );
 	CLR_CC_V();
 
-	if ( DST_MODE ) {
+	if ( DST_MODE )
+	{
 		if (( result = storeb_dst( p, data )) != OK )
 			return result;
-	} else {
-		if ( data & SIGN_B ) {
+	}
+	else
+	{
+		if ( data & SIGN_B )
+		{
 			word = 0177400;
-		} else {
+		}
+		else
+		{
 			word = 0;
 		}
 		word += data;
@@ -162,8 +223,9 @@ register pdp_regs *p;
 
 	p->psw &= bkmodel ? ~0357 : ~0217;
 	p->psw += (data & (bkmodel ? 0357 : 0217));
-	
-	if (last_spl != (p->psw >> 5)) {
+
+	if (last_spl != (p->psw >> 5))
+	{
 		// fprintf(stderr, "SPL %o\n", p->psw >> 5);
 	}
 	last_spl = (p->psw >> 5);
@@ -192,43 +254,58 @@ register pdp_regs *p;
 
 	old = temp;
 
-	if (( shift & 077 ) == 0 ) {	/* no shift */
+	if (( shift & 077 ) == 0 )  	/* no shift */
+	{
 		CHG_CC_N( temp );
 		CHG_CC_Z( temp );
 		CLR_CC_V();
 		return OK;
 	}
 
-	if ( shift & 040 ) {		/* right shift */
+	if ( shift & 040 )  		/* right shift */
+	{
 		count = 0100 - ( shift & 077 );
 		sign = temp & SIGN;
-		while ( count-- ) {
-			if ( temp & LSBIT ) {
+		while ( count-- )
+		{
+			if ( temp & LSBIT )
+			{
 				SET_CC_C();
-			} else {
+			}
+			else
+			{
 				CLR_CC_C();
 			}
 			temp >>= 1;
 			temp += sign;
 		}
-	} else {			/* left shift */
+	}
+	else  			/* left shift */
+	{
 		count = shift & 037;
-		while ( count-- ) {
-			if ( temp & SIGN ) {
+		while ( count-- )
+		{
+			if ( temp & SIGN )
+			{
 				SET_CC_C();
-			} else {
+			}
+			else
+			{
 				CLR_CC_C();
 			}
 			temp <<= 1;
 		}
 	}
-		
+
 	CHG_CC_N( temp );
 	CHG_CC_Z( temp );
 
-	if (( old & SIGN ) == ( temp & SIGN )) {
+	if (( old & SIGN ) == ( temp & SIGN ))
+	{
 		CLR_CC_V();
-	} else {
+	}
+	else
+	{
 		SET_CC_V();
 	}
 
@@ -245,12 +322,14 @@ register pdp_regs *p;
  */
 
 
-union s_u_word {
+union s_u_word
+{
 	d_word u_word;
 	short s_word;
 };
 
-union s_u_long {
+union s_u_long
+{
 	unsigned long u_long;
 	long s_long;
 };
@@ -295,7 +374,7 @@ register pdp_regs *p;
 	union s_u_long eql;
 	union s_u_word data2;
 	int result;
-	
+
 	tmp.u_long = p->regs[SRC_REG];
 	tmp.u_long = tmp.u_long << 16;
 	tmp.u_long  += p->regs[(SRC_REG) | 1 ];
@@ -303,11 +382,14 @@ register pdp_regs *p;
 	if (( result = load_dst( p, &data2.u_word )) != OK )
 		return result;
 
-	if ( data2.u_word == 0 ) {
+	if ( data2.u_word == 0 )
+	{
 		SET_CC_C();
 		SET_CC_V();
 		return OK;
-	} else {
+	}
+	else
+	{
 		CLR_CC_C();
 	}
 
@@ -360,48 +442,66 @@ register pdp_regs *p;
 	if (( result = load_dst( p, &shift )) != OK )
 		return result;
 
-	if (( shift & 077 ) == 0 ) {	/* no shift */
+	if (( shift & 077 ) == 0 )  	/* no shift */
+	{
 
 		CLR_CC_V();
 
-		if ( temp & 0x80000000 ) {
+		if ( temp & 0x80000000 )
+		{
 			SET_CC_N();
-		} else {
+		}
+		else
+		{
 			CLR_CC_N();
 		}
-	
-		if ( temp ) {
+
+		if ( temp )
+		{
 			CLR_CC_Z();
-		} else {
+		}
+		else
+		{
 			SET_CC_Z();
 		}
 
 		return OK;
 	}
-	if ( shift & 040 ) {		/* right shift */
+	if ( shift & 040 )  		/* right shift */
+	{
 		count = 0100 - ( shift & 077 );
 		sign = temp & 0x80000000;
-		while ( count-- ) {
-			if ( temp & LSBIT ) {
+		while ( count-- )
+		{
+			if ( temp & LSBIT )
+			{
 				SET_CC_C();
-			} else {
+			}
+			else
+			{
 				CLR_CC_C();
 			}
 			temp >>= 1;
 			temp += sign;
 		}
-	} else {			/* left shift */
+	}
+	else  			/* left shift */
+	{
 		count = shift & 037;
-		while ( count-- ) {
-			if ( temp & 0x80000000 ) {
+		while ( count-- )
+		{
+			if ( temp & 0x80000000 )
+			{
 				SET_CC_C();
-			} else {
+			}
+			else
+			{
 				CLR_CC_C();
 			}
 			temp <<= 1;
 		}
 	}
-		
+
 	if ( temp & 0x80000000 )
 		SET_CC_N();
 	else
@@ -412,9 +512,12 @@ register pdp_regs *p;
 	else
 		SET_CC_Z();
 
-	if (( old & 0x80000000 ) == ( temp & 0x80000000 )) {
+	if (( old & 0x80000000 ) == ( temp & 0x80000000 ))
+	{
 		CLR_CC_V();
-	} else {
+	}
+	else
+	{
 		SET_CC_V();
 	}
 

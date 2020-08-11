@@ -11,7 +11,7 @@
  *
  * Email:  mag@potter.csh.rit.edu
  * FTP:    ftp.csh.rit.edu:/pub/csh/mag/pdp.tar.Z
- * 
+ *
  * Copyright 1994, Eric A. Edwards
  *
  * Permission to use, copy, modify, and distribute this
@@ -41,11 +41,13 @@ register pdp_regs *p;
 	d_word data;
 	int result;
 
-	if (( result = load_dst( p, &data )) != OK ) {
+	if (( result = load_dst( p, &data )) != OK )
+	{
 		return result;
 	}
 
-	if ( p->psw & CC_C ) {		/* do if carry is set */
+	if ( p->psw & CC_C )  		/* do if carry is set */
+	{
 		if ( data == MPI )
 			SET_CC_V();
 		else
@@ -55,7 +57,9 @@ register pdp_regs *p;
 		else
 			CLR_CC_C();
 		data++;			/* add the carry */
-	} else {
+	}
+	else
+	{
 		CLR_CC_V();
 		CLR_CC_C();
 	}
@@ -77,7 +81,8 @@ register pdp_regs *p;
 	d_word data;
 	int result;
 
-	if (( result = load_dst( p, &data )) != OK ) {
+	if (( result = load_dst( p, &data )) != OK )
+	{
 		return result;
 	}
 
@@ -106,7 +111,8 @@ register pdp_regs *p;
 	d_word data;
 	int result;
 
-	if (( result = load_dst( p, &data )) != OK ) {
+	if (( result = load_dst( p, &data )) != OK )
+	{
 		return result;
 	}
 
@@ -151,7 +157,8 @@ register pdp_regs *p;
 	d_word data;
 	int result;
 
-	if (( result = load_dst( p, &data )) != OK ) {
+	if (( result = load_dst( p, &data )) != OK )
+	{
 		return result;
 	}
 
@@ -176,7 +183,8 @@ register pdp_regs *p;
 	d_word data;
 	int result;
 
-	if (( result = load_dst( p, &data )) != OK ) {
+	if (( result = load_dst( p, &data )) != OK )
+	{
 		return result;
 	}
 
@@ -204,7 +212,8 @@ register pdp_regs *p;
 	d_word data;
 	int result;
 
-	if (( result = load_dst( p, &data )) != OK ) {
+	if (( result = load_dst( p, &data )) != OK )
+	{
 		return result;
 	}
 
@@ -232,7 +241,8 @@ register pdp_regs *p;
 	d_word data;
 	int result;
 
-	if (( result = load_dst( p, &data )) != OK ) {
+	if (( result = load_dst( p, &data )) != OK )
+	{
 		return result;
 	}
 
@@ -266,7 +276,8 @@ register pdp_regs *p;
 	d_word temp;
 	int result;
 
-	if (( result = load_dst( p, &data )) != OK ) {
+	if (( result = load_dst( p, &data )) != OK )
+	{
 		return result;
 	}
 
@@ -300,7 +311,8 @@ register pdp_regs *p;
 	d_word temp;
 	int result;
 
-	if (( result = load_dst( p, &data )) != OK ) {
+	if (( result = load_dst( p, &data )) != OK )
+	{
 		return result;
 	}
 
@@ -333,7 +345,8 @@ register pdp_regs *p;
 	d_word data;
 	int result;
 
-	if (( result = load_dst( p, &data )) != OK ) {
+	if (( result = load_dst( p, &data )) != OK )
+	{
 		return result;
 	}
 
@@ -342,13 +355,16 @@ register pdp_regs *p;
 	else
 		CLR_CC_V();
 
-	if ( p->psw & CC_C ) {		/* do if carry is set */
+	if ( p->psw & CC_C )  		/* do if carry is set */
+	{
 		if ( data )
 			CLR_CC_C();
 		else
 			SET_CC_C();
 		--data;			/* subtract carry */
-	} else {
+	}
+	else
+	{
 		CLR_CC_C();
 	}
 
@@ -371,7 +387,8 @@ register pdp_regs *p;
 	d_word data3;
 	int result;
 
-	if (( result = load_dst( p, &data1 )) != OK ) {
+	if (( result = load_dst( p, &data1 )) != OK )
+	{
 		return result;
 	}
 
@@ -396,10 +413,13 @@ register pdp_regs *p;
 {
 	d_word data;
 
-	if ( p->psw & CC_N ) {
+	if ( p->psw & CC_N )
+	{
 		data = NEG_1;
 		CLR_CC_Z();
-	} else {
+	}
+	else
+	{
 		data = 0;
 		SET_CC_Z();
 	}
@@ -419,7 +439,8 @@ register pdp_regs *p;
 	d_word data;
 	int result;
 
-	if (( result = load_dst( p, &data )) != OK ) {
+	if (( result = load_dst( p, &data )) != OK )
+	{
 		return result;
 	}
 
@@ -441,7 +462,8 @@ register pdp_regs *p;
 	d_byte data;
 	int result;
 
-	if (( result = loadb_dst( p, &data )) != OK ) {
+	if (( result = loadb_dst( p, &data )) != OK )
+	{
 		return result;
 	}
 
@@ -463,7 +485,8 @@ register pdp_regs *p;
 	d_byte data;
 	int result;
 
-	if (( result = loadb_dst( p, &data )) != OK ) {
+	if (( result = loadb_dst( p, &data )) != OK )
+	{
 		return result;
 	}
 
@@ -492,7 +515,8 @@ pdp_regs *p;
 	d_byte data;
 	int result;
 
-	if (( result = loadb_dst( p, &data )) != OK ) {
+	if (( result = loadb_dst( p, &data )) != OK )
+	{
 		return result;
 	}
 
@@ -535,7 +559,8 @@ register pdp_regs *p;
 	d_byte data;
 	int result;
 
-	if (( result = loadb_dst( p, &data )) != OK ) {
+	if (( result = loadb_dst( p, &data )) != OK )
+	{
 		return result;
 	}
 
@@ -560,7 +585,8 @@ register pdp_regs *p;
 	d_byte data;
 	int result;
 
-	if (( result = loadb_dst( p, &data )) != OK ) {
+	if (( result = loadb_dst( p, &data )) != OK )
+	{
 		return result;
 	}
 
@@ -588,7 +614,8 @@ register pdp_regs *p;
 	d_byte data;
 	int result;
 
-	if (( result = loadb_dst( p, &data )) != OK ) {
+	if (( result = loadb_dst( p, &data )) != OK )
+	{
 		return result;
 	}
 
@@ -616,7 +643,8 @@ register pdp_regs *p;
 	d_byte data;
 	int result;
 
-	if (( result = loadb_dst( p, &data )) != OK ) {
+	if (( result = loadb_dst( p, &data )) != OK )
+	{
 		return result;
 	}
 
@@ -650,7 +678,8 @@ register pdp_regs *p;
 	d_byte temp;
 	int result;
 
-	if (( result = loadb_dst( p, &data )) != OK ) {
+	if (( result = loadb_dst( p, &data )) != OK )
+	{
 		return result;
 	}
 
@@ -684,7 +713,8 @@ register pdp_regs *p;
 	d_byte temp;
 	int result;
 
-	if (( result = loadb_dst( p, &data )) != OK ) {
+	if (( result = loadb_dst( p, &data )) != OK )
+	{
 		return result;
 	}
 
@@ -717,11 +747,13 @@ register pdp_regs *p;
 	d_byte data;
 	int result;
 
-	if (( result = loadb_dst( p, &data )) != OK ) {
+	if (( result = loadb_dst( p, &data )) != OK )
+	{
 		return result;
 	}
 
-	if ( p->psw & CC_C ) {		/* do if carry is set */
+	if ( p->psw & CC_C )  		/* do if carry is set */
+	{
 		if ( data == MPI_B )
 			SET_CC_V();
 		else
@@ -731,7 +763,9 @@ register pdp_regs *p;
 		else
 			CLR_CC_C();
 		++data;			/* add the carry */
-	} else {
+	}
+	else
+	{
 		CLR_CC_V();
 		CLR_CC_C();
 	}
@@ -753,18 +787,22 @@ register pdp_regs *p;
 	d_byte data;
 	int result;
 
-	if (( result = loadb_dst( p, &data )) != OK ) {
+	if (( result = loadb_dst( p, &data )) != OK )
+	{
 		return result;
 	}
 
-	if ( p->psw & CC_C ) {		/* do if carry is set */
+	if ( p->psw & CC_C )  		/* do if carry is set */
+	{
 		if ( data )
 			CLR_CC_C();
 		else
 			SET_CC_C();
 
 		--data;			/* subtract carry */
-	} else {
+	}
+	else
+	{
 		CLR_CC_C();
 	}
 

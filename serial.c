@@ -16,26 +16,32 @@ FILE * ser_in = 0;
  * returned when ready_out is true.
  */
 d_word
-serial_read() {
+serial_read()
+{
 	unsigned char ret = READY_IN;
-	if (!data_ptr || !ready_out) {
+	if (!data_ptr || !ready_out)
+	{
 		/* Idle state - continuous stop bits */
 		return READY_IN | DATA_BIT;
 	}
-	if (bitnum == -1) {
+	if (bitnum == -1)
+	{
 		bitnum = 0;
 		/* start bit is 0 */
 		return READY_IN & ~DATA_BIT;
 	}
-	if (bitnum == 8) {
+	if (bitnum == 8)
+	{
 		/* Byte ended - stop bit is 1 */
 		return READY_IN | DATA_BIT;
 	}
 	ret |= *data_ptr & (1<<bitnum++) ? DATA_BIT : 0;
-	if (!ser_in) {
+	if (!ser_in)
+	{
 		ser_in = fopen("serial.in", "r");
 	}
-	if (bitnum == 8) {
+	if (bitnum == 8)
+	{
 		int c = getc(ser_in);
 		if (c == EOF) data_ptr = 0;
 		retbyte = c;
@@ -52,34 +58,45 @@ char curbit = -1;
  * to the port: no need to compare time marks.
  */
 void
-serial_write(d_word w) {
+serial_write(d_word w)
+{
 	unsigned char cur = (w & DATA_BIT) != 0;
 
-	if (ready_out != (w & READY_OUT)) {
+	if (ready_out != (w & READY_OUT))
+	{
 		ready_out = w & READY_OUT;
 	}
 
-	if (!ready_out) {
+	if (!ready_out)
+	{
 		/* Idle state */
 		bitnum = 8;
-	} else {
-	    if (!data_ptr) {
-		/* Set up the probe byte */
-		retbyte = PROBE;
-		data_ptr = &retbyte;
-	    }
-	    bitnum = -1;
 	}
-	if (curbit >= 0) {
+	else
+	{
+		if (!data_ptr)
+		{
+			/* Set up the probe byte */
+			retbyte = PROBE;
+			data_ptr = &retbyte;
+		}
+		bitnum = -1;
+	}
+	if (curbit >= 0)
+	{
 		forming |= cur << curbit++;
-		if (curbit == 8) {
+		if (curbit == 8)
+		{
 			curbit = -1;
-			if (forming != PROBE) {
+			if (forming != PROBE)
+			{
 				data_ptr = 0;
 				fprintf(stderr, "Serial line probe failed\n");
 			}
 		}
-	} else if (ser_out && !cur) {
+	}
+	else if (ser_out && !cur)
+	{
 		/* Next write will be data bit */
 		curbit = 0;
 	}

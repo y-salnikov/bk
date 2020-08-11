@@ -11,7 +11,7 @@
  *
  * Email:  mag@potter.csh.rit.edu
  * FTP:    ftp.csh.rit.edu:/pub/csh/mag/pdp.tar.Z
- * 
+ *
  * Copyright 1994, Eric A. Edwards
  *
  * Permission to use, copy, modify, and distribute this
@@ -55,23 +55,28 @@ ui()
 
 	ui_done = 0;
 	char last_cmd = 'h';
-	do {
+	do
+	{
 		putchar( '%' );
 		putchar( ' ' );
 		fflush( stdout );
 		s = fgets( buf, BUFSIZ, stdin );
-		if ( s ) {
-			if (s[strlen(s)-1] == '\n') {
+		if ( s )
+		{
+			if (s[strlen(s)-1] == '\n')
+			{
 				s[strlen(s)-1] = '\0';
 			}
 			while( isspace( *s ))
 				++s;
-			if (!*s) {
+			if (!*s)
+			{
 				buf[0] = last_cmd;
 				buf[1] = 0;
 				s = buf;
 			}
-			switch( *s++ ) {
+			switch( *s++ )
+			{
 			case 'a':		/* show assembler code*/
 				ui_asm( s );
 				break;
@@ -109,20 +114,20 @@ ui()
 				ui_done = 1;
 				break;
 			case 'h':	/* show help */
-			        fprintf(stderr, _("\nEmulator shell commands:\n\n"));
-			        fprintf(stderr, _(" 'a' - Show assembler code ( a [start [end]] )\n"));
+				fprintf(stderr, _("\nEmulator shell commands:\n\n"));
+				fprintf(stderr, _(" 'a' - Show assembler code ( a [start [end]] )\n"));
 				fprintf(stderr, _(" 'd' - Dump memory ( d [start [end]] ) \n"));
-			        fprintf(stderr, _(" 'e' - Edit memory, end with .\n"));
-			        fprintf(stderr, _(" 'g' - Start execution ('g' or 'g 100000' boots the BK0010 computer)\n"));
-			        fprintf(stderr, _(" 'r' - Register dump\n"));
-			        fprintf(stderr, _(" 's' - Execute a single instruction\n"));
-			        fprintf(stderr, _(" 't' - Toggle trace flag\n"));
-			        fprintf(stderr, _(" 'l' - Load file ('l filename.bin' loads specified file)\n"));
-			        fprintf(stderr, _(" 'i' - Fire an interrupt\n"));
-			        fprintf(stderr, _(" 'b' - Set a breakpoint\n"));
-			        fprintf(stderr, _(" '?' - Emulator help\n"));
-			        fprintf(stderr, _(" 'h' - Command help\n"));
-			        fprintf(stderr, _(" 'q' - Quit\n\n"));
+				fprintf(stderr, _(" 'e' - Edit memory, end with .\n"));
+				fprintf(stderr, _(" 'g' - Start execution ('g' or 'g 100000' boots the BK0010 computer)\n"));
+				fprintf(stderr, _(" 'r' - Register dump\n"));
+				fprintf(stderr, _(" 's' - Execute a single instruction\n"));
+				fprintf(stderr, _(" 't' - Toggle trace flag\n"));
+				fprintf(stderr, _(" 'l' - Load file ('l filename.bin' loads specified file)\n"));
+				fprintf(stderr, _(" 'i' - Fire an interrupt\n"));
+				fprintf(stderr, _(" 'b' - Set a breakpoint\n"));
+				fprintf(stderr, _(" '?' - Emulator help\n"));
+				fprintf(stderr, _(" 'h' - Command help\n"));
+				fprintf(stderr, _(" 'q' - Quit\n\n"));
 				break;
 			case '?':	/* show help */
 				showemuhelp();
@@ -132,10 +137,13 @@ ui()
 				break;
 			}
 			last_cmd = s[-1];
-		} else {
+		}
+		else
+		{
 			ui_done = 1;	/* NULL means done */
 		}
-	} while( !ui_done );
+	}
+	while( !ui_done );
 }
 
 
@@ -155,13 +163,17 @@ int *good;
 		++s;
 	*v = 0;
 	*good = EMPTY;
-	while( !isspace( *s ) && ( *s != '\0' )) {
+	while( !isspace( *s ) && ( *s != '\0' ))
+	{
 		if ( *good == EMPTY )
 			*good = 0;
-		if ( isoct( *s )) {
+		if ( isoct( *s ))
+		{
 			*v = ( *v << 3 ) + ( *s - '0' );
 			(*good)++;
-		} else {
+		}
+		else
+		{
 			*good = FALSE;
 			break;
 		}
@@ -187,13 +199,17 @@ int *good;
 		++s;
 	*v = 0;
 	*good = EMPTY;
-	while( !isspace(*s) && ( *s != '\0' )) {
+	while( !isspace(*s) && ( *s != '\0' ))
+	{
 		if ( *good == EMPTY )
 			*good = 0;
-		if ( isoct( *s )) {
+		if ( isoct( *s ))
+		{
 			*v = ( *v << 3 ) + ( *s - '0' );
 			(*good)++;
-		} else {
+		}
+		else
+		{
 			*good = FALSE;
 			break;
 		}
@@ -218,40 +234,54 @@ char *s;
 	int good;
 
 	s = rd_c_addr( s, &new, &good );
-	if ( good == FALSE ) {
+	if ( good == FALSE )
+	{
 		fprintf(stderr, _("Bad address\n"));;
 		return;
 	}
-	if ( good != EMPTY ) {
+	if ( good != EMPTY )
+	{
 		addr = new;
 		s = rd_c_addr( s, &new, &good );
-		if ( good == FALSE ) {
+		if ( good == FALSE )
+		{
 			fprintf(stderr, _("Bad address\n"));;
 			return;
 		}
-		if ( good != EMPTY ) {
+		if ( good != EMPTY )
+		{
 			last = new;
-		} else {
+		}
+		else
+		{
 			last = addr + (DWIDTH * 8);
 		}
-	} else {
+	}
+	else
+	{
 		addr = last;
 		last += (DWIDTH * 8);
 	}
-	
+
 	addr &= 0177777;
 	last &= 0177777;
 
-	for( ; addr != last; addr = (addr + 2) & 0177777 ) {
-		if (( count % DWIDTH ) == 0 ) {
+	for( ; addr != last; addr = (addr + 2) & 0177777 )
+	{
+		if (( count % DWIDTH ) == 0 )
+		{
 			printf( "%06o: ", addr );
 		}
-		if ( lc_word( addr, &word ) == OK ) {
+		if ( lc_word( addr, &word ) == OK )
+		{
 			printf( "%06o ", word );
-		} else {
+		}
+		else
+		{
 			printf( "XXXXXX " );
 		}
-		if (( count % DWIDTH ) == ( DWIDTH - 1 )) {
+		if (( count % DWIDTH ) == ( DWIDTH - 1 ))
+		{
 			putchar( '\n' );
 		}
 		++count;
@@ -274,30 +304,42 @@ char *s;
 	char *t;
 
 	s = rd_c_addr( s, &new, &good );
-	if ( good == FALSE ) {
+	if ( good == FALSE )
+	{
 		fprintf(stderr, _("Bad address\n"));
 		return;
-	} else if ( good != EMPTY ) {
+	}
+	else if ( good != EMPTY )
+	{
 		addr = new;
 	}
 
-	do {
+	do
+	{
 		addr &= 0777777;
 		printf( "%06o=", addr );
-		if ( lc_word( addr, &word ) == OK ) {
+		if ( lc_word( addr, &word ) == OK )
+		{
 			printf( "%06o ", word );
-		} else {
+		}
+		else
+		{
 			printf( "XXXXXX " );
 		}
 		fflush( stdout );
 		t = fgets( buf, BUFSIZ, stdin );
-		if ( t == NULL ) {
+		if ( t == NULL )
+		{
 			done = 1;	/* NULL means done */
 			ui_done = 1;
-		} else {
-			switch( *t ) {
+		}
+		else
+		{
+			switch( *t )
+			{
 			case '+':	/* next addr */
-			case '\0': case '\n':
+			case '\0':
+			case '\n':
 				addr += 2;
 				break;
 			case '.':	/* exit edit */
@@ -315,10 +357,14 @@ char *s;
 			case '6':
 			case '7':
 				rd_d_word( t, &word, &good );
-				if ( good == FALSE ) {
+				if ( good == FALSE )
+				{
 					fprintf(stderr, _("Bad address\n"));
-				} else {
-					if( sc_word( addr, word ) != OK ) {
+				}
+				else
+				{
+					if( sc_word( addr, word ) != OK )
+					{
 						printf( _("write error\n") );
 					}
 				}
@@ -329,7 +375,8 @@ char *s;
 				break;
 			}
 		}
-	} while ( !done );
+	}
+	while ( !done );
 }
 
 
@@ -347,7 +394,8 @@ int n;
 	int good;
 
 	s = rd_d_word( s, &word, &good );
-	if ( good == FALSE ) {
+	if ( good == FALSE )
+	{
 		fprintf(stderr, _("Bad address\n"));
 		return;
 	}
@@ -364,7 +412,8 @@ ui_interrupt(s)
 char *s;
 {
 	int vector;
-	if (1 != sscanf(s, "%o", &vector)) {
+	if (1 != sscanf(s, "%o", &vector))
+	{
 		fprintf(stderr, _("Bad vector\n"));
 		return;
 	}
@@ -375,7 +424,8 @@ ui_breakpoint(s)
 char *s;
 {
 	int addr;
-	if (1 != sscanf(s, "%o", &addr)) {
+	if (1 != sscanf(s, "%o", &addr))
+	{
 		fprintf(stderr, _("Bad address\n"));
 		breakpoint = -1;
 		return;
@@ -390,9 +440,9 @@ char *s;
 ui_registers()
 {
 	printf( "R0-R4: %06o %06o %06o %06o\n",
-		pdp.regs[0], pdp.regs[1], pdp.regs[2], pdp.regs[3] );
+	        pdp.regs[0], pdp.regs[1], pdp.regs[2], pdp.regs[3] );
 	printf( "R5-R7: %06o %06o %06o %06o\n",
-		pdp.regs[4], pdp.regs[5], pdp.regs[6], pdp.regs[7] );
+	        pdp.regs[4], pdp.regs[5], pdp.regs[6], pdp.regs[7] );
 	printf( "PSW: %06o [", pdp.psw );
 	if ( pdp.psw & 010 ) putchar( 'N' );
 	if ( pdp.psw & 04 ) putchar( 'Z' );
@@ -414,40 +464,48 @@ char *s;
 
 	fprintf(stderr, _("LOAD called\n"));
 	while ( isspace (*s) ) s++;
-	if (isoct(*s)) {
-	    sscanf(s, "%o", &addr);
-	    do s++; while (isoct(*s) || isspace (*s));
+	if (isoct(*s))
+	{
+		sscanf(s, "%o", &addr);
+		do s++;
+		while (isoct(*s) || isspace (*s));
 	}
 	f = fopen(s, "r");
-	if (!f) {
+	if (!f)
+	{
 		perror(s);
 		return;
 	}
 	c1 = getc(f);
 	c2 = getc(f);
 	if (-1 == addr)
-	    addr = c2 << 8 | c1;
+		addr = c2 << 8 | c1;
 	c1 = getc(f);
 	c2 = getc(f);
 	len = c2 << 8 | c1;
 	fprintf(stderr, _("Reading %s into %06o... "), s, addr);
-	if (addr < 01000) {
-	    fprintf(stderr, _("Possible start addresses:  "));
-	    do {
-		    c1 = getc(f);
-		    c2 = getc(f);
-		    fprintf(stderr, "%06o ", c2 << 8 | c1);
-		    addr += 2;
-		    len -= 2;
-	    } while (len > 0 && addr < 01000 && !feof(f));
+	if (addr < 01000)
+	{
+		fprintf(stderr, _("Possible start addresses:  "));
+		do
+		{
+			c1 = getc(f);
+			c2 = getc(f);
+			fprintf(stderr, "%06o ", c2 << 8 | c1);
+			addr += 2;
+			len -= 2;
+		}
+		while (len > 0 && addr < 01000 && !feof(f));
 
 	}
 	/* the file is in little-endian format */
-	while (len > 0 && !feof(f)) {
+	while (len > 0 && !feof(f))
+	{
 		c1 = getc(f);
 		c2 = getc(f);
-		if (OK != sc_word(addr, c2 << 8 | c1)) {
-		    break;
+		if (OK != sc_word(addr, c2 << 8 | c1))
+		{
+			break;
 		}
 		addr += 2;
 		len -= 2;
@@ -477,32 +535,39 @@ char *s;
 	char last_given = 0;
 
 	s = rd_c_addr( s, &new, &good );
-	if ( good == FALSE ) {
+	if ( good == FALSE )
+	{
 		fprintf(stderr, _("Bad address\n"));;
 		return;
 	}
-	if ( good != EMPTY ) {
+	if ( good != EMPTY )
+	{
 		addr = new;
 		s = rd_c_addr( s, &new, &good );
-		if ( good == FALSE ) {
+		if ( good == FALSE )
+		{
 			fprintf(stderr, _("Bad address\n"));;
 			return;
 		}
-		if ( good != EMPTY ) {
+		if ( good != EMPTY )
+		{
 			last = new;
 			last_given = 1;
-		} 
-	} else {
+		}
+	}
+	else
+	{
 		addr = last;
 	}
 
-	
+
 	addr &= 0177777;
 
-	for( count = 0; last_given ? addr < last : count < 23; count++ ) {
-			addr=disas(addr,buf); 
-			puts(buf);
-		}
+	for( count = 0; last_given ? addr < last : count < 23; count++ )
+	{
+		addr=disas(addr,buf);
+		puts(buf);
+	}
 	last = addr;
 	last &= 0177777;
 }
@@ -515,22 +580,30 @@ ui_viewbuf ( char * s )
 	extern int cybuf[1024];
 	extern int cybufidx;
 	s = rd_d_word( s, &word, &good );
-	if (good == FALSE ) {
+	if (good == FALSE )
+	{
 		fprintf(stderr, _("Bad address\n"));
 		return;
 	}
-	if ( good == EMPTY ) {
+	if ( good == EMPTY )
+	{
 		word = 20;
 	}
-	for (word = (cybufidx - word) & 1023; word != cybufidx; 
-		word = (word + 1) & 1023) {
+	for (word = (cybufidx - word) & 1023; word != cybufidx;
+	        word = (word + 1) & 1023)
+	{
 		int a = cybuf[word];
-		if (a >= 0) {
+		if (a >= 0)
+		{
 			disas(a, buf);
 			puts(buf);
-		} else if (a == -1) {
+		}
+		else if (a == -1)
+		{
 			puts("Returning from disk I/O");
-		} else {
+		}
+		else
+		{
 			printf("Vector %o\n", -a);
 		}
 	}

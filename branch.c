@@ -11,7 +11,7 @@
  *
  * Email:  mag@potter.csh.rit.edu
  * FTP:    ftp.csh.rit.edu:/pub/csh/mag/pdp.tar.Z
- * 
+ *
  * Copyright 1994, Eric A. Edwards
  *
  * Permission to use, copy, modify, and distribute this
@@ -44,13 +44,14 @@ unsigned set;
 	d_word offset;
 
 	last_branch = p->regs[PC];
-	if ((( p->psw & set ) == set ) && (( p->psw & clear ) == 0 )) {
+	if ((( p->psw & set ) == set ) && (( p->psw & clear ) == 0 ))
+	{
 		offset = LOW8( p->ir );
 		if ( offset & SIGN_B )
 			offset += 0177400 ;
 		p->regs[PC] += ( offset * 2 );
 	}
-	
+
 	return OK;
 }
 
@@ -85,7 +86,8 @@ register pdp_regs *p;
 	d_word offset;
 
 	last_branch = p->regs[PC];
-	if (( p->psw & CC_C ) || ( p->psw & CC_Z )) {
+	if (( p->psw & CC_C ) || ( p->psw & CC_Z ))
+	{
 		offset = LOW8( p->ir );
 		if ( offset & SIGN_B )
 			offset += 0177400 ;
@@ -112,7 +114,8 @@ register pdp_regs *p;
 	nbit = ( p->psw & CC_N ) ? 1 : 0;
 	vbit = ( p->psw & CC_V ) ? 1 : 0;
 
-	if (( nbit ^ vbit ) == 0 ) {
+	if (( nbit ^ vbit ) == 0 )
+	{
 		offset = LOW8( p->ir );
 		if ( offset & SIGN_B )
 			offset += 0177400 ;
@@ -139,7 +142,8 @@ register pdp_regs *p;
 	nbit = ( p->psw & CC_N ) ? 1 : 0;
 	vbit = ( p->psw & CC_V ) ? 1 : 0;
 
-	if (( nbit ^ vbit ) == 1 ) {
+	if (( nbit ^ vbit ) == 1 )
+	{
 		offset = LOW8( p->ir );
 		if ( offset & SIGN_B )
 			offset += 0177400 ;
@@ -166,7 +170,8 @@ register pdp_regs *p;
 	nbit = ( p->psw & CC_N ) ? 1 : 0;
 	vbit = ( p->psw & CC_V ) ? 1 : 0;
 
-	if ((( nbit ^ vbit ) == 1) || (p->psw & CC_Z)) {
+	if ((( nbit ^ vbit ) == 1) || (p->psw & CC_Z))
+	{
 		offset = LOW8( p->ir );
 		if ( offset & SIGN_B )
 			offset += 0177400 ;
@@ -193,7 +198,8 @@ register pdp_regs *p;
 	nbit = ( p->psw & CC_N ) ? 1 : 0;
 	vbit = ( p->psw & CC_V ) ? 1 : 0;
 
-	if ((( nbit ^ vbit ) == 0) && (( p->psw & CC_Z ) == 0 )) {
+	if ((( nbit ^ vbit ) == 0) && (( p->psw & CC_Z ) == 0 ))
+	{
 		offset = LOW8( p->ir );
 		if ( offset & SIGN_B )
 			offset += 0177400 ;

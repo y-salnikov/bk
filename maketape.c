@@ -10,29 +10,35 @@
 #define putINM  beep(1, 8 * SYNCH)
 #define putOUTM beep(1, 4 * SYNCH), beep(0, 4 * SYNCH)
 
-beep(what, len) {
+beep(what, len)
+{
 	putchar((what << 7) | (len >> 8));
 	putchar(len & 0xFF);
 	return 0;
 }
 
-putbyte(byte) {
+putbyte(byte)
+{
 	int i;
-	for (i = 0; i < 8; i++) {
-		if (byte & 1) put1; else put0;
+	for (i = 0; i < 8; i++)
+	{
+		if (byte & 1) put1;
+		else put0;
 		byte >>= 1;
 	}
 }
 
 putarray(p, l)
-unsigned char * p; int l;
+unsigned char * p;
+int l;
 {
 	int i;
 	for(i = 0; i < l; i++)
 		putbyte(p[i]);
 }
 
-puttune(l) {
+puttune(l)
+{
 	while(l--) putSI;
 }
 
@@ -40,12 +46,14 @@ puttune(l) {
 #define FAKE_LENGTH 1
 #define FAKE_CHECKSUM 0177777
 
-void putaddr(FILE * in) {
+void putaddr(FILE * in)
+{
 	putbyte(in ? getc(in) : FAKE_ADDRESS & 0xff);
 	putbyte(in ? getc(in) : FAKE_ADDRESS >> 8);
 }
 
-int putlen(FILE * in) {
+int putlen(FILE * in)
+{
 	int len = in ? getc(in) : FAKE_LENGTH & 0xff;
 	len |= (in ? getc(in) : FAKE_LENGTH >> 8) << 8;
 	putbyte(len & 0xFF);
@@ -53,16 +61,19 @@ int putlen(FILE * in) {
 	return len;
 }
 
-main(argc, argv) int argc; char ** argv; {
+main(argc, argv) int argc;
+char ** argv;
+{
 
-        /* Gettext staff */
-        setlocale (LC_ALL, "");
+	/* Gettext staff */
+	setlocale (LC_ALL, "");
 	bindtextdomain ("bk", "/usr/share/locale");
-        textdomain ("bk");
-		
+	textdomain ("bk");
+
 	int i, sum = 0, len, namelen;
 	FILE * in;
-	if (argc != 3) {
+	if (argc != 3)
+	{
 		fprintf(stderr, _("Usage: maketape BK_NAME infile > outfile\n"));
 		exit(1);
 	}
@@ -89,7 +100,8 @@ main(argc, argv) int argc; char ** argv; {
 	putOUTM;
 	put1;
 	/* data must be here */
-	while(len--) {
+	while(len--)
+	{
 		i = in ? getc(in) : 0;
 		sum += i;
 		if (sum & 0200000) sum = (sum & 0xFFFF) + 1;

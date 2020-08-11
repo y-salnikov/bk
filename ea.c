@@ -11,7 +11,7 @@
  *
  * Email:  mag@potter.csh.rit.edu
  * FTP:    ftp.csh.rit.edu:/pub/csh/mag/pdp.tar.Z
- * 
+ *
  * Copyright 1994, Eric A. Edwards
  *
  * Permission to use, copy, modify, and distribute this
@@ -45,8 +45,9 @@ d_word *addr;
 	d_word indirect;
 	int result;
 
-	switch (DST_MODE) {
-	case 0:	
+	switch (DST_MODE)
+	{
+	case 0:
 		return CPU_ILLEGAL;
 		/*NOTREACHED*/
 		break;
@@ -141,8 +142,9 @@ d_byte *data;
 	d_word addr, indirect;
 	int result;
 
-	switch (DST_MODE) {
-	case 0:	
+	switch (DST_MODE)
+	{
+	case 0:
 		*data = p->regs[DST_REG] & 0377;
 		return OK;
 		/*NOTREACHED*/
@@ -231,8 +233,9 @@ d_byte *data;
 	d_word addr, indirect;
 	int result;
 
-	switch (SRC_MODE) {
-	case 0:	
+	switch (SRC_MODE)
+	{
+	case 0:
 		*data = p->regs[SRC_REG] & 0377;
 		return OK;
 		/*NOTREACHED*/
@@ -314,8 +317,9 @@ d_byte data;
 	d_word addr, indirect;
 	int result;
 
-	switch (DST_MODE) {
-	case 0:	
+	switch (DST_MODE)
+	{
+	case 0:
 		p->regs[DST_REG] &= 0177400;
 		p->regs[DST_REG] += data;
 		return OK;
@@ -395,7 +399,8 @@ storeb_dst_2( p, data )
 register pdp_regs *p;
 d_byte data;
 {
-	if (DST_MODE == 0) {
+	if (DST_MODE == 0)
+	{
 		p->regs[DST_REG] &= 0177400;
 		p->regs[DST_REG] += data;
 		return OK;
@@ -415,7 +420,8 @@ d_word *data;
 	d_word addr, indirect;
 	int result;
 
-	switch (SRC_MODE) {
+	switch (SRC_MODE)
+	{
 	case 0:
 		*data = p->regs[SRC_REG];
 		return OK;
@@ -492,8 +498,9 @@ d_word data;
 	d_word addr, indirect;
 	int result;
 
-	switch (DST_MODE) {
-	case 0:	
+	switch (DST_MODE)
+	{
+	case 0:
 		p->regs[DST_REG] = data;
 		return OK;
 		/*NOTREACHED*/
@@ -569,8 +576,9 @@ d_word *data;
 	d_word addr, indirect;
 	int result;
 
-	switch (DST_MODE) {
-	case 0:	
+	switch (DST_MODE)
+	{
+	case 0:
 		*data = p->regs[DST_REG];
 		return OK;
 		/*NOTREACHED*/
@@ -650,7 +658,8 @@ store_dst_2( p, data )
 register pdp_regs *p;
 d_word data;
 {
-	if (DST_MODE == 0) {
+	if (DST_MODE == 0)
+	{
 		p->regs[DST_REG] = data;
 		return OK;
 	}

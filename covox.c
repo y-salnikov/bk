@@ -8,7 +8,8 @@
 unsigned char covox_val;
 unsigned int covox_age;
 
-covox_init() {
+covox_init()
+{
 	covox_val = 0;
 	covox_age = ~0;
 }
@@ -26,12 +27,16 @@ covox_write(c_addr addr, d_word word)
 	return OK;
 }
 
-covox_bwrite(c_addr addr, d_byte byte) {
+covox_bwrite(c_addr addr, d_byte byte)
+{
 	d_word offset = addr & 1;
 	d_word word;
-	if (offset == 0) {
+	if (offset == 0)
+	{
 		covox_val = byte;
-	} else {
+	}
+	else
+	{
 		covox_val = 0;
 	}
 	covox_age = 0;

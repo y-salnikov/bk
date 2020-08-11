@@ -13,7 +13,8 @@ unsigned io_sound_val = 0;
 flag_t io_stop_happened = 0;
 flag_t telegraph_enabled = 0; 	/* Default */
 
-io_init() {
+io_init()
+{
 	sound_init();
 	tape_init();
 	return OK;
@@ -30,10 +31,10 @@ d_word *word;
 	 * and 0300 for BK-0011
 	 */
 	*word = 0100000 | (bkmodel << 14) |
-		(telegraph_enabled ? serial_read() : 0200) |
-		key_pressed |
-		tape_bit |
-		io_stop_happened;
+	        (telegraph_enabled ? serial_read() : 0200) |
+	        key_pressed |
+	        tape_bit |
+	        io_stop_happened;
 	io_stop_happened = 0;
 	return OK;
 }
@@ -45,37 +46,46 @@ d_word word;
 {
 	d_word offset = addr - IO_REG;
 	unsigned oldval = io_sound_val;
-	if (bkmodel && word & 04000) {
+	if (bkmodel && word & 04000)
+	{
 		pagereg_write(word);
 		return OK;
 	}
 	io_sound_val = word & 0300;
-	if (io_sound_val != oldval) {
+	if (io_sound_val != oldval)
+	{
 		if (fullspeed) io_sound_count = ticks;
-		    io_sound_age = 0;
+		io_sound_age = 0;
 	}
 	/* status, value */
 	tape_write((word >> 7) & 1, (word >> 6) & 1);
-	if (telegraph_enabled) {
+	if (telegraph_enabled)
+	{
 		serial_write(word);
 	}
 	return OK;
 }
 
-io_bwrite(c_addr addr, d_byte byte) {
+io_bwrite(c_addr addr, d_byte byte)
+{
 	d_word offset = addr - IO_REG;
 	unsigned oldval = io_sound_val;
-	if (offset == 0) {
-	    io_sound_val = byte & 0300;
-	    if (io_sound_val != oldval) {
-		    if (fullspeed) io_sound_count = ticks;
-		    io_sound_age = 0;
-	    }
-	    tape_write((byte >> 7) & 1, (byte >> 6) & 1);
-	    if (telegraph_enabled) {
-		    serial_write(byte);
-	    }
-	} else if (bkmodel && byte & 010) {
+	if (offset == 0)
+	{
+		io_sound_val = byte & 0300;
+		if (io_sound_val != oldval)
+		{
+			if (fullspeed) io_sound_count = ticks;
+			io_sound_age = 0;
+		}
+		tape_write((byte >> 7) & 1, (byte >> 6) & 1);
+		if (telegraph_enabled)
+		{
+			serial_write(byte);
+		}
+	}
+	else if (bkmodel && byte & 010)
+	{
 		pagereg_bwrite(byte);
 	}
 	return OK;
@@ -90,7 +100,8 @@ FILE * irpslog = 0;
 enum { IdleL, NameL, HeaderL, BodyL, TailL } lstate = 0;
 unsigned char rdbuf = 0;
 
-line_init() {
+line_init()
+{
 	irpslog = fopen("irps.log", "w");
 }
 
@@ -98,9 +109,11 @@ line_read(addr, word)
 c_addr addr;
 d_word *word;
 {
-	switch (addr) {
+	switch (addr)
+	{
 	// Always ready
-	case LINE_RST: case LINE_WST:
+	case LINE_RST:
+	case LINE_WST:
 		*word = 0200;
 		break;
 	case LINE_WDT:
@@ -118,13 +131,15 @@ line_write(addr, word)
 c_addr addr;
 d_word word;
 {
-	switch (addr) {
+	switch (addr)
+	{
 	case LINE_WDT:
 		return line_bwrite(addr, word);
 	case LINE_RDT:
 		// no effect
 		break;
-	case LINE_RST: case LINE_WST:
+	case LINE_RST:
+	case LINE_WST:
 		// no effect yet
 		break;
 	}
@@ -139,9 +154,11 @@ c_addr addr;
 d_byte byte;
 {
 	fputc(byte, irpslog);
-	switch (lstate) {
+	switch (lstate)
+	{
 	case IdleL:
-		switch (byte) {
+		switch (byte)
+		{
 		case 0: // stop
 			fprintf(stderr, "Stop requested\n");
 			break;
@@ -172,7 +189,8 @@ d_byte byte;
 	case NameL:
 		fname[subcnt++] = byte;
 		rdbuf = 0;
-		if (subcnt == 10) {
+		if (subcnt == 10)
+		{
 			fprintf(stderr, " file name %s\n", fname);
 			lstate = HeaderL;
 			subcnt = 0;
@@ -180,7 +198,8 @@ d_byte byte;
 		break;
 	case HeaderL:
 		fprintf(stderr, "Got %#o\n", byte);
-		switch (subcnt) {
+		switch (subcnt)
+		{
 		case 0:
 			file_addr = byte;
 			break;
@@ -194,14 +213,16 @@ d_byte byte;
 			file_len |= byte << 8;
 			break;
 		}
-		if (++subcnt == 4) {
+		if (++subcnt == 4)
+		{
 			fprintf(stderr, " file addr %#o, len %#o\n", file_addr, file_len);
 			lstate = BodyL;
 			subcnt = 0;
 		}
 		break;
 	case BodyL:
-		if (++subcnt == file_len) {
+		if (++subcnt == file_len)
+		{
 			lstate = IdleL;
 			subcnt = 0;
 			fprintf(stderr, "Finished\n");

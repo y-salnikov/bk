@@ -11,7 +11,7 @@
  *
  * Email:  mag@potter.csh.rit.edu
  * FTP:    ftp.csh.rit.edu:/pub/csh/mag/pdp.tar.Z
- * 
+ *
  * Copyright 1994, Eric A. Edwards
  *
  * Permission to use, copy, modify, and distribute this
@@ -43,10 +43,13 @@ register pdp_regs *p;
 	d_word data;
 	int result;
 
-	if ( SRC_MODE ) {
+	if ( SRC_MODE )
+	{
 		if (( result = load_src( p, &data )) != OK )
 			return result;
-	} else {
+	}
+	else
+	{
 		data = p->regs[SRC_REG];
 	}
 
@@ -54,10 +57,13 @@ register pdp_regs *p;
 	CHG_CC_Z( data );
 	CLR_CC_V();
 
-	if ( DST_MODE ) {
+	if ( DST_MODE )
+	{
 		if (( result = store_dst( p, data )) != OK )
 			return result;
-	} else {
+	}
+	else
+	{
 		p->regs[DST_REG] = data;
 	}
 
@@ -264,10 +270,13 @@ register pdp_regs *p;
 	d_byte data;
 	int result;
 
-	if ( SRC_MODE ) {
+	if ( SRC_MODE )
+	{
 		if (( result = loadb_src( p, &data )) != OK )
 			return result;
-	} else {
+	}
+	else
+	{
 		data = LOW8( p->regs[SRC_REG] );
 	}
 
@@ -277,10 +286,13 @@ register pdp_regs *p;
 
 	/* move byte to a register causes sign extension */
 
-	if ( DST_MODE ) {
+	if ( DST_MODE )
+	{
 		if (( result = storeb_dst( p, data )) != OK )
 			return result;
-	} else {
+	}
+	else
+	{
 		if ( data & SIGN_B )
 			p->regs[DST_REG] = 0177400 + data;
 		else
