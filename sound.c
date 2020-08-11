@@ -8,13 +8,14 @@
 #include <math.h>
 #define _(String) gettext (String)
 
-#define SOUND_EXPONENT	(8+io_sound_freq/20000)
-#define SOUND_BUFSIZE   (1<<SOUND_EXPONENT)		/* about 1/43 sec */
+//#define SOUND_EXPONENT	(4+io_sound_freq/20000)
+//#define SOUND_BUFSIZE   (1<<SOUND_EXPONENT)		/* about 1/43 sec */
+#define SOUND_BUFSIZE 16
 #define MAX_SOUND_AGE	~0	/* always play */
 #define SPK_VOLUME 0.3
 #define SYNTH_VOLUME 0.3
 #define COVOX_VOLUME 0.3
-#define FIFO_SIZE (SOUND_BUFSIZE*4)
+#define FIFO_SIZE (SOUND_BUFSIZE<<8)
 
 unsigned io_max_sound_age = MAX_SOUND_AGE;
 unsigned io_sound_age = MAX_SOUND_AGE;	/* in io_sound_pace's since last change */
