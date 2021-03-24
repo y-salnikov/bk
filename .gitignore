@@ -1,4 +1,8 @@
 *.o
 *.geany
 *.old
-bk
+./bk
+./maketape
+./readtape
+./pngtorgba
+
